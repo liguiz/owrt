@@ -1,0 +1,186 @@
+﻿<!DOCTYPE style PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<title>stick up</title>
+<head>
+	<meta charset="utf-8">
+	<script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+	<script src="js/jquery.sha1.js" type="text/javascript"></script>
+	<script src="js/script.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<style type="text/css">
+		#inav{
+			margin:auto;
+			}
+	</style>
+</head>
+<body style="background-color:#f0f0f0;">
+	<div id="nav" class="navbar-wrapper" >
+		<div id="version"></div>
+		<div id="inav">
+			<a href="/" id="logo">UC</a>
+			<div id="cProf">
+				<button class="prof" id='prof'>登录/注册</button>
+				<div id="mProf">
+					<form id="login">
+						<ul class="verticallist">注册需要输入两次密码.<br />
+							<li>用户名<input name="usr" id="usr" type="text" placeholder="请输入用户名" style="width:60%;"/></li>
+							<li>密码<input name="pw" id="pw" type="password" placeholder="请输入密码"/></li>
+							<li>密码<input name="pw2" id="pw2" type="password" placeholder="注册请重复请输入密码"/></li>
+							<li><input type="button" onclick="aSubmit()" value="登录/注册" style="float:right;"/></li>
+						</ul>
+					</form>
+				</div>
+			</div>
+			<div class='menu'>
+
+			</div>
+			<div id="context">
+				<ul id="word" class="" style="list-style-type:none;margin:0px;height:30px;">
+					<li onclick="loadpage(0)"><a href="#" style="cursor:pointer">首页</a></li>
+					<li><a href="#" style="cursor:pointer">OpenWRT资源</a></li>
+					<li><div>
+						<span><a style="cursor:pointer">WRT助手</a></span>
+						<ul class="wrt" style="list-style-type:none;margin:0px;height:30px;padding-left: 0px;display:none;">
+							<li>下载</li>
+							<li>FAQ</li>
+							<li>帮助</li>
+						</ul>
+					</div></li>
+					<li>Tetris</li>
+					<li>Sudoku</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<iframe id="fram" style="display:none;">
+		
+	</iframe>
+	<div id="dis" styp><span>
+		<br/>
+		
+		
+		
+		
+		 <div id="blog_content" class="blog_content">
+    <h1>前言</h1>
+<p>Web2.0发展的迅猛，个人觉得很大程度依托于Ajax的出现。然而，我们分享一个网页给好友一般都是直接把URL复制给他，但是Ajax的特点导致了同样一个URL，有可能你跟你的好友看到的内容是完全不一样的，这个真的很头疼。</p>
+<p>于是我发现了如果从URL的HASH入手（也就是URL后边#的部分）可以跟踪这个浏览记录的历史，在此记录一下。</p>
+<p> </p>
+<h1>Ajax</h1>
+<p>既然出现了Ajax这个词，我想就稍微解释一下。</p>
+<p>Ajax:“Asynchronous JavaScript and XML”（异步JavaScript和XML)。</p>
+<p>有点抽象！</p>
+<p>想想一般访问一个网站是通过什么方式，输入地址，浏览器向服务器请求页面，浏览器返回“整个”页面内容渲染，结束。</p>
+<p>注意哦，上边强调的是整个页面内容！</p>
+<p>然后往往，一个交互性强的Web应用，如果采用上述做法那每次操作都要等待整个页面的更新，交互性大大下降，为了模拟桌面程序那样的无缝交互，我们需要用到js，而为了去服务器获取新的数据，我们需要背后偷偷地去请求数据，这里就是“异步”！</p>
+<p>这样的方式获得数据之后，可以通过回调函数来更新页面信息，从而达到了局部刷新！给用户一种无缝跳转的感觉。</p>
+<p> </p>
+<h1>为什么Ajax无法跟踪浏览历史？</h1>
+<p>我们假设，仅仅是假设：输入一个URL访问某网站时，浏览器背后就会记录你当前访问的URL，紧接着从当前页面点击一个链接跳转到新页面，浏览器就会把刚刚访问的那个URL记录在历史里边，这样你点“后退”按钮时，它就知道要回到刚刚那个页面。想必这样的过程应该是挺容易理解的。</p>
+<p>那么Ajax为什么不能跟踪呢？</p>
+<p>Ajax请求往往是你页面的某个按钮触发了点击事件（可以是其他事件！）而发送的。</p>
+<p>如果你在当前页面点击了某个按钮触发了Ajax请求发送，然后看到了一副风景画，突然觉得很有feel，把地址复制给好友叫他去看。这时，他访问了这个地址，发现看到的不是你看到的内容，因为他没有去点击那个按钮，导致Ajax请求没有被发送。</p>
+<p>所以我们需要寻求一种方法去跟踪历史。</p>
+<p> </p>
+<h1>Iframe跟踪历史</h1>
+<p>想必大家都知道iframe就是页面上一个新的小页面，在iframe上跳转是可以记录到当前页面的浏览历史的。</p>
+<p>大家可以去看看QQ邮箱里边的结构。用户在做任意操作，均为局部刷新（只刷新iframe内容），并且用户可以使用后退按钮回到上个操作！</p>
+<p> </p>
+<h1>从URL入手</h1>
+<p>回到主题，那我就是喜欢Ajax的话应该怎么做？</p>
+<p>既然我想要复制URL分享当前看到的东西，那我肯定要从URL去入手，如果说我将location.href（也就是当前的url）改变了，当前页面就会跳转到改变后的URL。</p>
+<p>那么URL怎么改变，当前页才不会刷新呢？</p>
+<p>有用过锚的人就知道，URL后边的#部分就是hash部分，改变这段值页面是不会跳转到新页面也不会刷新。</p>
+<p>如果说我们发送一个Ajax请求后，自动改变当前的URL的hash部分。</p>
+<p>这样把地址复制给他人的时候，页面可以拿到该hash然后根据其值发送对应的Ajax请求并做同样地处理，这样就可以跟踪浏览历史了。</p>
+<p> </p>
+<h1>
+修改hash以及响应hash改变的事件</h1>
+<p>除了IE8以下的IE系列外，其他浏览器均支持<a href="https://developer.mozilla.org/en/DOM/window.onhashchange">window.onhashchange</a>
+来监听URL的hash变化，至于如何修改hash一会给代码就知道。</p>
+<p>那么为了兼容IE8以下版本的IE，需要用定时器来监听URL上的hash变化，当然会消耗性能了，没办法，天朝底下到处都用万恶的IE，你得为他们考虑可用性。</p>
+<p>下边贴个代码：</p>
+<p> </p>
+<pre class="html" name="code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;meta http-equiv="Content-Type" content="text/html; charset=GBK"&gt;
+		&lt;meta charset="gbk"&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		&lt;button onclick="changeHash()"&gt;Click Me&lt;/button&gt;
+		&lt;script language="javascript" src="hashchange.js"&gt;&lt;/script&gt;
+	&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p> </p>
+<pre class="js" name="code">/**
+ * hashchange.js
+ * @author raphealguo(raphealguo@qq.com)
+ * @date 2011/08/09
+ */
+var nextHash = 0, //下一个hash值，每次会递增
+	curHash = '';//记录当前hash
+
+if ("onhashchange" in window) {//IE8以下版本的浏览器不支持此属性
+	alert("The browser supports the hashchange event!");
+}
+	
+function getHash(){//获取hash
+	var h = location.hash;
+	
+	if (!h){
+		return '';
+	}else{
+		return location.hash;
+	}
+}
+
+function changeHash(){//修改hash 每次点击按钮触发hash变化
+	/*	
+		发送Ajax请求时，可以修改相应的hash值，
+		只要在页面load完之后获取hash值并发送对应的Ajax请求并更新页面，
+		这样就可以达到用Ajax也能跟踪浏览历史的目的
+	*/
+	location.hash = "#" + nextHash++;
+}
+
+function changeHashCallBack(){//hash变化之后，回调函数会被触发
+	var hash = getHash();
+	
+	if (curHash != hash){
+		curHash = hash;
+		alert("哈希更改 :" + hash);
+	}
+}
+
+if (document.all &amp;&amp; //辨别IE
+	!document.documentMode//IE8才有documentMode
+	){
+	/* 低于IE8的IE系列采用定时器监听 */
+	setInterval(changeHashCallBack, 100);
+	alert('&lt;IE8');
+}else{
+	window.onhashchange = changeHashCallBack;
+}</pre>
+<p>可以看到，当按钮点击时， 仅仅触发的是getHash函数，而changeHashCallBack是通过监听/window.onhashchange
+的机制来触发的。</p>
+<p> </p>
+<p>另外jQuery的一个插件：<strong><a href="http://plugins.jquery.com/project/hashchange">jQuery HashChange</a>
+</strong>
+也是可以支持hashChange，但它没有使用原生态的window.onhashchange
+，火狐等浏览器底下也是采用定时器监听的办法去监控hash是否改变，这点个人认为不好，并且此插件还得依托jQuery，真的还不如模仿上边的代码，自己写一下。</p>
+<p> </p>
+<h1>本篇总结</h1>
+<p>身处在Web前端，就应该让用户体验更强更好的交互，当然了这里边包括了很多很多方面：</p>
+<p>可用性、方便性（本文写的就是我认为的其中一种方便性）、性能（不至于搞垮浏览器崩溃）、安全性、人性化（考虑残疾人群）……</p>
+<p>身为Web前端开发的你是否经常考虑这些问题！？</p>
+<p> </p>
+  </div>
+
+  
+  
+  
+  
+		
+	</span></div>
+	<p align="center">End © 2013 Lee.G</p>
+</body>
